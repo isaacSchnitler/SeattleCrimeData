@@ -1,0 +1,3 @@
+﻿report_number,offense_id,offense_start_datetime,report_datetime,group_a_b,crime_against_category,offense_parent_group,offense,offense_code,precinct,sector,beat,mcpp,_100_block_address,longitude,latitude,offense_end_datetime,street_1,street_2
+2020-036160,12595747123,NaN,2020-01-31T01:01:23.000,A,PROPERTY,"EXTORTION/BLACKMAIL	",EXTORTION/BLACKMAIL,210,W,Q,Q3,QUEEN ANNE,100 BLOCK OF W MERCER ST,-122.3586686,47.62458989,NaN,W MERCER ST,NaN
+2008-198818,7640783923,2008-06-01T18:30:00.000,2008-06-02T12:14:00.000,A,PERSON,ASSAULT OFFENSES,INTIMIDATION,13C,W,K,K2,DOWNTOWN COMMERCIAL,2ND AVE / JAMES ST,-122.3325194,47.6023056,2008-06-02T01:30:00.000,2ND AVE,JAMES ST

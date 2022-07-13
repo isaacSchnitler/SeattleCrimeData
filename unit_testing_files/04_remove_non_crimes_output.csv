@@ -1,0 +1,2 @@
+﻿report_number,offense_id,offense_start_datetime,report_datetime,group_a_b,crime_against_category,offense_parent_group,offense,offense_code,precinct,sector,beat,mcpp,_100_block_address,longitude,latitude,offense_end_datetime
+2020-030009,12247242226,2020-01-25T07:06:00.000,2020-01-25T07:42:53.000,A,PROPERTY,LARCENY-THEFT,SHOPLIFTING,23C,N,B,B1,BALLARD SOUTH,57XX BLOCK OF 24TH AVE NW,-122.3875873,47.6705517,2020-01-25T07:16:00.000
