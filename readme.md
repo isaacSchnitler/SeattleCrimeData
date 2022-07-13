@@ -17,7 +17,7 @@ In order to access the dataset, a Socrata Open Data API (SODA) token is needed, 
 ## Usage
 This project is designed similar to that of a data pipeline, in that it follows a specific, intended sequence of steps. When used, this project sould be executed accordingly to get the best results. To make this process more straightfoward, the seattle_loading script can be run directly as the main program, which will scrape, clean and load the data in the correct sequence. 
 
-```terminal
+```zsh
 python3 seattle_loading.py
 ```
 
