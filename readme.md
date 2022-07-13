@@ -9,13 +9,16 @@ While I do not live in Seattle, I am still very much connected through family, f
 ### How to use?
 This project is designed similar to that of a data pipeline, where the execution of the project is determined by a specific, intended order of steps. 
 
-To begin with, we need a Socrata Open Data API (SODA) token to access the dataset. The SPD crime data API docs can be found below:
-*https://dev.socrata.com/foundry/data.seattle.gov/tazs-3rd5*
+In order to access the dataset, we need a Socrata Open Data API (SODA) token which can be found here: *https://dev.socrata.com/foundry/data.seattle.gov/tazs-3rd5*
 
 
-Next, from the seattle_scraping file we import the ScrapeSeattleData class. This class creates an object that represents, what I like to think of as, the scraping process: 
 ```Python
 from seattle_scraping import ScrapeSeattleData
 
+# Create an instance of the ScrapeSeattleData class, which represents the process of scraping the data
 scraping_process = ScrapeSeattleData()
+
+
+scraping_process.scrape(1)
 ```
+
