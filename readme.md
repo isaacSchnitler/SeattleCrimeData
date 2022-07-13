@@ -14,7 +14,7 @@ To begin with, we need a Socrata Open Data API (SODA) token to access the datase
 
 
 Next, from the seattle_scraping file we import the ScrapeSeattleData class. This class creates an object that represents, what I like to think of as, the scraping process: 
-```
+```Python
 from seattle_scraping import ScrapeSeattleData
 
 scraping_process = ScrapeSeattleData()
