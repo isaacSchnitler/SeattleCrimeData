@@ -23,5 +23,5 @@ In order to access the dataset, a Socrata Open Data API (SODA) token is needed, 
 IsaacSchnitler@Isaacs-MBP ~ % python3 seattle_loading.py
 ```
 
-- The *seattle_cleaning.py* cleaning script uses a unique audit feature, which logs values that are recognized as invalid and therefore nullified during the cleaning process in a separate table. For instance, say a record contains a precinct code value, like *NW*, that is not a valid precinct (*valid precinct codes: N, S, E, W, SW*). In this scenaario, the *NW* value is nullified and audited, where the value, unique identifier, column name, and the reason why it was audited is logged in a separate table. 
+- The *seattle_cleaning.py* cleaning script uses a unique audit feature, which logs values that are recognized as invalid and therefore nullified during the cleaning process in a separate table. For instance, say a record contains a precinct code value, like *NW*, that is not a valid precinct (*valid precinct codes: N, S, E, W, SW*). In this scenario, the *NW* value is nullified and audited, where the value, unique identifier, column name, and the reason why it was audited is logged in a separate table. 
 
