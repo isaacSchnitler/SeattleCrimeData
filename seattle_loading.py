@@ -154,7 +154,6 @@ def remove_data(cursor_object):
 
     except Exception as e:
         print(e)
-        cursor_object.rollback()
         cursor_object.close()
         sys.exit()
 
@@ -183,8 +182,8 @@ def insert_data(cursor_object, clean_data, audit_data):
 
     except Exception as e:
         print(e)
-        cursor_object.rollback()
         cursor_object.close()
+        sys.exit()
 
     else:
         cursor_object.commit()

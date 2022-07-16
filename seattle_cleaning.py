@@ -398,7 +398,7 @@ class CleanSeattleData:
                     # If the proposed match is > 90% then fill the invalid mcpp value with the match
                     if process.extractOne(row['mcpp'], CleanSeattleData.mcpp['mcpp'])[1] > 90:
                         self.raw_data.loc[self.raw_data['offense_id'] == row['offense_id'], ['mcpp']] = \
-                                                               process.extractOne(row['mcpp'], CleanSeattleData.mcpp['mcpp'])[0]
+                                                       process.extractOne(row['mcpp'], CleanSeattleData.mcpp['mcpp'])[0]
 
                     else:
                         # Otherwise, audit and null the invalid mcpp value
@@ -509,6 +509,16 @@ class CleanSeattleData:
                 ~(self.raw_data['latitude'].between(45.5, 49.0)), ['latitude']
                              ] = np.nan
 
+    def fix_column_order(self):
+        """
+        Summary: Orders the columns in a consistent manner.
+        """
+
+        self.raw_data = self.raw_data[['report_number', 'offense_id', 'offense_start_datetime', 'offense_end_datetime',
+                                       'report_datetime', 'group_a_b', 'crime_against_category', 'offense_parent_group',
+                                       'offense', 'offense_code', 'precinct', 'sector', 'beat', 'mcpp',
+                                       '_100_block_address', 'longitude', 'latitude', 'street_1', 'street_2']]
+
     def fix_na_values(self):
         """
         Summary: Changes all np.NaN, np.NaT, <NA> and 'nan' values to None, so that when entered
@@ -585,6 +595,7 @@ def clean(raw_data):
     cleaning_process.fix_misspelled_mcpp()
     cleaning_process.fix_location_codes()
     cleaning_process.fix_deci_degrees()
+    cleaning_process.fix_column_order()
     cleaning_process.fix_na_values()
 
     return cleaning_process.raw_data, cleaning_process.audit_table
