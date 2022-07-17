@@ -5,6 +5,8 @@ import sys
 import os
 
 from dotenv import load_dotenv
+from datetime import timedelta
+from datetime import datetime
 
 load_dotenv()
 
@@ -74,7 +76,7 @@ def main():
 
     # Scrape yesterday's data (or 1 day ago)
     scraping_process = seattle_scraping.ScrapeSeattleData()
-    scraping_process.scrape(1)
+    scraping_process.scrape()
 
     # Clean the data
     clean_data, audit_data = seattle_cleaning.clean(scraping_process.raw_data)
@@ -129,24 +131,20 @@ def remove_data(cursor_object):
              (within a year) data.
     """
 
-    # Get the date from 367 days ago
-    check_date = seattle_scraping.get_check_date(367)
+    # Get the date from 366 days ago
+    date_limit = datetime.strftime(datetime.today().date() - timedelta(days=366), '%Y-%m-%d')
 
     delete_statement_tblcrime = f'''
                                     DELETE FROM [SeattleCrimeData].[dbo].[tblAudit]
                                     WHERE offense_id in (
                                                         SELECT offense_id
                                                         FROM [SeattleCrimeData].[dbo].[tblCrime]
-                                                        WHERE YEAR(report_datetime) = {check_date.year}
-                                                        AND MONTH(report_datetime) = {check_date.month}
-                                                        AND DAY(report_datetime) = {check_date.day}
+                                                        WHERE report_datetime < '{date_limit}'
                                                         )
                                     
     
                                     DELETE FROM [SeattleCrimeData].[dbo].[tblCrime]
-                                    WHERE YEAR(report_datetime) = {check_date.year}
-                                    AND MONTH(report_datetime) = {check_date.month}
-                                    AND DAY(report_datetime) = {check_date.day}
+                                    WHERE report_datetime < '{date_limit}'
                                 '''
 
     try:

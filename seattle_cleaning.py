@@ -521,20 +521,16 @@ class CleanSeattleData:
 
     def fix_na_values(self):
         """
-        Summary: Changes all np.NaN, np.NaT, <NA> and 'nan' values to None, so that when entered
+        Summary: Changes all np.NaN and np.NaT values to None, so when entered
                 into SQL Server database, missing values can be entered as NULL.
         """
 
-        # Convert all columns to Object data type
+        # Convert all columns to Object data type to allow for None
         for col in list(self.raw_data):
             self.raw_data[col] = self.raw_data[col].astype('O')
 
-        # Replace street_1/street_2 'nan' values with None
-        for col in ['street_1', 'street_2']:
-            self.raw_data.loc[self.raw_data[col] == 'nan', [col]] = self.raw_data[col].replace('nan', None)
-
-        # Replace all np.NaN, np.NaT, and <NA> to None values
-        # Which, when inserted into SQL Server database, converts cleanly to NULL
+        # Replace all np.NaN and np.NaT to None values
+        # so when inserted into SQL Server database, it converts cleanly to NULL
         self.raw_data.where(pd.notnull(self.raw_data), None, inplace=True)
 
 
@@ -603,6 +599,7 @@ def clean(raw_data):
 
 if __name__ == '__main__':
     clean()
+
 
 
 
