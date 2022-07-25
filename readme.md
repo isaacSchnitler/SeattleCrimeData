@@ -13,6 +13,7 @@ While I do not live in Seattle, I am still very much connected through family, f
 
 - The SPD crime data is updated on a daily basis, as opposed to real-time, meaning the most recent crime data will always be from the day before.  
 
+
 - This project is designed similar to that of a data pipeline, in that it follows a specific, intended sequence of steps. 
 
 

@@ -1,5 +1,3 @@
-import seattle_scraping
-import seattle_cleaning
 import pyodbc
 import sys
 import os
@@ -17,7 +15,7 @@ database = os.getenv('DB_NAME')
 
 # SQL insert statement for the clean data
 insert_into_tblCrime = '''
-    INSERT INTO [SeattleCrimeData].[dbo].[tblCrime] 
+    INSERT INTO [SeattleCrimeDataDB].[dbo].[tblCrime] 
     (
         [report_number],
         [offense_id],
@@ -48,7 +46,7 @@ insert_into_tblCrime = '''
 
 # SQL insert statement for the audit data
 insert_into_tblAudit = '''
-    INSERT INTO [SeattleCrimeData].[dbo].[tblAudit]
+    INSERT INTO [SeattleCrimeDataDB].[dbo].[tblAudit]
     (
         [audited_column],
         [offense_id],
@@ -61,37 +59,6 @@ insert_into_tblAudit = '''
     ?, ?, ?, ?
     )
 '''
-
-
-def main():
-    """
-    Summary: Brings together all components:
-                > Scrapes the data
-                > Cleans the data
-                > Prepares data as record sets
-                > Connects to the database
-                > Removes data >1-year-old from the database
-                > And inserts the data into the database
-    """
-
-    # Scrape yesterday's data (or 1 day ago)
-    scraping_process = seattle_scraping.ScrapeSeattleData()
-    scraping_process.scrape()
-
-    # Clean the data
-    clean_data, audit_data = seattle_cleaning.clean(scraping_process.raw_data)
-
-    # Transform the dataframes into record sets
-    clean_data_record_set, audit_data_record_set = convert_into_record_sets(clean_data, audit_data)
-
-    # Establish a connection with the database
-    cursor = establish_connection()
-
-    # Attempt to remove data
-    remove_data(cursor)
-
-    # Insert the new data into the database
-    insert_data(cursor, clean_data_record_set, audit_data_record_set)
 
 
 def convert_into_record_sets(clean_data, audit_data):
@@ -135,15 +102,15 @@ def remove_data(cursor_object):
     date_limit = datetime.strftime(datetime.today().date() - timedelta(days=366), '%Y-%m-%d')
 
     delete_statement_tblcrime = f'''
-                                    DELETE FROM [SeattleCrimeData].[dbo].[tblAudit]
+                                    DELETE FROM [SeattleCrimeDataDB].[dbo].[tblAudit]
                                     WHERE offense_id in (
                                                         SELECT offense_id
-                                                        FROM [SeattleCrimeData].[dbo].[tblCrime]
+                                                        FROM [SeattleCrimeDataDB].[dbo].[tblCrime]
                                                         WHERE report_datetime < '{date_limit}'
                                                         )
                                     
     
-                                    DELETE FROM [SeattleCrimeData].[dbo].[tblCrime]
+                                    DELETE FROM [SeattleCrimeDataDB].[dbo].[tblCrime]
                                     WHERE report_datetime < '{date_limit}'
                                 '''
 
@@ -186,11 +153,3 @@ def insert_data(cursor_object, clean_data, audit_data):
     else:
         cursor_object.commit()
         cursor_object.close()
-
-
-if __name__ == '__main__':
-    main()
-
-
-
-
