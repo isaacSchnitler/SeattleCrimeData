@@ -16,7 +16,7 @@ def main():
 
     # Scrape yesterday's data (or 1 day ago)
     scraping_process = seattle_scraping.ScrapeSeattleData()
-    scraping_process.scrape('2021-07-24')
+    scraping_process.scrape(how='>=')
 
     # Clean the data
     clean_data, audit_data = seattle_cleaning.clean(scraping_process.raw_data)

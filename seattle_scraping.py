@@ -24,16 +24,25 @@ class ScrapeSeattleData:
 
         self.raw_data = None
 
-    def scrape(self, date=None):
+    def scrape(self, date=None, how=None):
         """
-        Summary: Specify a report date and collect the data that occurred on or after that date. By
-                 default, collect the previous day's data.
+        Summary: Specify a report date and how to collect the data with respect to the
+                 specified date. The 'date' defaults to the day before the current date.
+                 The 'how' defaults to '>=', or said differently, collect data greater than
+                 or equal to the 'date' specified.
         """
 
-        # If no argument is passed for the date parameter, get the current day's date, subtract
-        # one day, and format it as a yyyy-mm-dd string value.
+        # If no argument is passed for the 'date' parameter, get the current day's date, subtract
+        # one day, and format it as a yyyy-mm-dd string value
         if date is None:
             date = datetime.strftime(datetime.today().date() - timedelta(days=1), '%Y-%m-%d')
+
+        # If no argument is passed for the 'how' parameter, simply collect data that is '>='
+        # the 'date' parameter
+        if how is None or \
+           how not in ('=', '>', '<', '>=', '<='):
+
+            how = '>='
 
         # Connect with the client
         client = Socrata(domain=self.domain, app_token=self.app_token, username=self.username, password=self.password)
@@ -41,7 +50,7 @@ class ScrapeSeattleData:
         # SQL query used to extract the data, filtered by the check_date date
         query = f'''
                             SELECT * 
-                            WHERE DATE_TRUNC_YMD(report_datetime) >= '{date}'
+                            WHERE DATE_TRUNC_YMD(report_datetime) {how} '{date}'
                             ORDER BY report_datetime desc 
                             LIMIT 100000000
                         '''
