@@ -24,7 +24,7 @@ class ScrapeSeattleData:
 
         self.raw_data = None
 
-    def scrape(self, date=None, how=None):
+    def scrape(self, date=None, how='>='):
         """
         Summary: Specify a report date and how to collect the data with respect to the
                  specified date. The 'date' defaults to the day before the current date.
@@ -36,13 +36,6 @@ class ScrapeSeattleData:
         # one day, and format it as a yyyy-mm-dd string value
         if date is None:
             date = datetime.strftime(datetime.today().date() - timedelta(days=1), '%Y-%m-%d')
-
-        # If no argument is passed for the 'how' parameter, simply collect data that is '>='
-        # the 'date' parameter
-        if how is None or \
-           how not in ('=', '>', '<', '>=', '<='):
-
-            how = '>='
 
         # Connect with the client
         client = Socrata(domain=self.domain, app_token=self.app_token, username=self.username, password=self.password)

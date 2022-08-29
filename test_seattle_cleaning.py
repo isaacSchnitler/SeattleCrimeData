@@ -40,7 +40,7 @@ class CleaningUnitTesting(unittest.TestCase):
         input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/01_fix_whitespace_input.csv', dtype='O'))
         expected_output = pd.read_csv('unit_testing_files/01_fix_whitespace_output.csv', dtype='O')
 
-        input_df.fix_whitespace()
+        input_df.cleanup_whitespace()
 
         # self.display(input_df.raw_data, expected_output)
         pdt.assert_frame_equal(input_df.raw_data, expected_output)
@@ -49,7 +49,7 @@ class CleaningUnitTesting(unittest.TestCase):
         input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/02_fix_column_casing_input.csv', dtype='O'))
         expected_output = pd.read_csv('unit_testing_files/02_fix_column_casing_output.csv', dtype='O')
 
-        input_df.fix_column_casing()
+        input_df.cleanup_column_casing()
 
         # self.display(input_df.raw_data, expected_output)
         pdt.assert_frame_equal(input_df.raw_data, expected_output)
@@ -58,7 +58,7 @@ class CleaningUnitTesting(unittest.TestCase):
         input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/03_fix_missing_values_input.csv', dtype='O'))
         expected_output = pd.read_csv('unit_testing_files/03_fix_missing_values_output.csv', dtype='O')
 
-        input_df.fix_missing_values()
+        input_df.cleanup_na_values()
 
         # self.display(input_df.raw_data, expected_output)
         pdt.assert_frame_equal(input_df.raw_data, expected_output)
@@ -67,7 +67,7 @@ class CleaningUnitTesting(unittest.TestCase):
         input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/04_remove_non_crimes_input.csv', dtype='O'))
         expected_output = pd.read_csv('unit_testing_files/04_remove_non_crimes_output.csv', dtype='O')
 
-        input_df.remove_non_crimes()
+        input_df.clear_non_crimes()
 
         # self.display(input_df.raw_data, expected_output)
         pdt.assert_frame_equal(input_df.raw_data, expected_output)
@@ -76,7 +76,7 @@ class CleaningUnitTesting(unittest.TestCase):
         input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/05_fix_address_input.csv', dtype='O'))
         expected_output = pd.read_csv('unit_testing_files/05_fix_address_output.csv', dtype='O')
 
-        input_df.fix_address()
+        input_df.cleanup_addresses()
 
         # self.display(input_df.raw_data, expected_output)
         pdt.assert_frame_equal(input_df.raw_data, expected_output)
@@ -85,7 +85,7 @@ class CleaningUnitTesting(unittest.TestCase):
         input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/06_fix_dtypes_input.csv', dtype='O'))
         flag_df = pd.read_csv('unit_testing_files/06_fix_dtypes_flag.csv')
 
-        input_df.fix_dtypes()
+        input_df.cleanup_dtypes()
         input_gdf = ge.from_pandas(input_df.raw_data)
 
         for column, dtype in CleaningUnitTesting.correct_dtypes.items():
@@ -100,7 +100,7 @@ class CleaningUnitTesting(unittest.TestCase):
         input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/07_fix_offense_datetime_input.csv', dtype='O'))
         expected_output = pd.read_csv('unit_testing_files/07_fix_offense_datetime_output.csv', dtype='O')
 
-        input_df.fix_offense_datetime()
+        input_df.correct_offense_datetime()
 
         # self.display(input_df.raw_data, expected_output)
         pdt.assert_frame_equal(input_df.raw_data, expected_output)
@@ -109,10 +109,10 @@ class CleaningUnitTesting(unittest.TestCase):
         input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/08_fix_report_number_input.csv', dtype='O'))
         expected_output = sc.CleanSeattleData(pd.read_csv('unit_testing_files/08_fix_report_number_output.csv', dtype='O'))
 
-        input_df.fix_dtypes()
-        expected_output.fix_dtypes()
+        input_df.cleanup_dtypes()
+        expected_output.cleanup_dtypes()
 
-        input_df.fix_report_number()
+        input_df.cleanup_report_number()
 
         # self.display(input_df.raw_data, expected_output.raw_data)
         pdt.assert_frame_equal(input_df.raw_data, expected_output.raw_data)
@@ -121,7 +121,7 @@ class CleaningUnitTesting(unittest.TestCase):
         input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/09_fix_misspelled_mcpp_input.csv', dtype='O'))
         expected_output = pd.read_csv('unit_testing_files/09_fix_misspelled_mcpp_output.csv', dtype='O')
 
-        input_df.fix_misspelled_mcpp()
+        input_df.cleanup_misspelled_mcpp()
 
         # self.display(input_df.raw_data, expected_output)
         pdt.assert_frame_equal(input_df.raw_data, expected_output)
@@ -130,7 +130,7 @@ class CleaningUnitTesting(unittest.TestCase):
         input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/10_fix_location_codes_input.csv', dtype='O'))
         expected_output = pd.read_csv('unit_testing_files/10_fix_location_codes_output.csv', dtype='O')
 
-        input_df.fix_location_codes()
+        input_df.correct_na_loc_codes()
 
         # self.display(input_df.raw_data, expected_output)
         pdt.assert_frame_equal(input_df.raw_data, expected_output)
@@ -144,7 +144,7 @@ class CleaningUnitTesting(unittest.TestCase):
         expected_output = pd.read_csv('unit_testing_files/11_fix_deci_degrees_output.csv',
                                       dtype={'longitude': 'float64', 'latitude': 'float64'})
 
-        input_df.fix_deci_degrees()
+        input_df.correct_deci_degrees()
 
         # self.display(input_df.raw_data, expected_output)
         pdt.assert_frame_equal(input_df.raw_data, expected_output)
@@ -153,7 +153,7 @@ class CleaningUnitTesting(unittest.TestCase):
         input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/12_fix_na_values_input.csv', dtype='O'))
         expected_output = pd.read_csv('unit_testing_files/12_fix_na_values_output.csv', dtype='O')
 
-        input_df.fix_na_values()
+        input_df.config_na_values()
 
         # self.display(input_df.raw_data, expected_output)
         pdt.assert_frame_equal(input_df.raw_data, expected_output)

@@ -25,7 +25,7 @@ class CleanSeattleData:
 
         self.audit_table = audit_table()
 
-    def fix_whitespace(self):
+    def cleanup_whitespace(self):
         """
         Summary: Corrects various whitespace issues, such as:
                 > Strips any leading/ending whitespace
@@ -71,7 +71,7 @@ class CleanSeattleData:
                 # Replace non-spaced ampersand with a SPACED AMPERSAND
                 self.raw_data[column] = self.raw_data[column].str.replace(amp_re, '\\1 & \\2', regex=True)
 
-    def fix_column_casing(self):
+    def cleanup_column_casing(self):
         """
         Summary: Uppercase any columns containing letters.
         """
@@ -83,7 +83,7 @@ class CleanSeattleData:
             # Uppercase those letters
             self.raw_data[column] = self.raw_data[column].str.upper()
 
-    def fix_missing_values(self):
+    def cleanup_na_values(self):
         """
         Summary: Replaces any common, designated missing values (specified in the
                 missing_values class attribute) or column specific missing value indicators
@@ -107,7 +107,7 @@ class CleanSeattleData:
         for column in ['latitude', 'longitude']:
             self.raw_data.loc[self.raw_data[column].str.contains(r'^0', regex=True), [column]] = np.nan
 
-    def remove_non_crimes(self):
+    def clear_non_crimes(self):
         """
         Summary: Removes records with a 'NOT_A_CRIME' value in the crime_against_category. These
                 records represent justifiable homicides (self-defense), which are not crimes but
@@ -122,7 +122,7 @@ class CleanSeattleData:
                                 inplace=True
                                )
 
-    def fix_address(self):
+    def cleanup_addresses(self):
         """
         Summary: Corrects a variety of address value issues, such as:
                     > Replace X's with 0's in block information
@@ -130,8 +130,6 @@ class CleanSeattleData:
 
                     > Fixes inconsistent road labels
                         -i.e. AV -> AVE
-
-                    > Derives street information from _100_block_address column, into new columns
         """
 
         # Regex strings used below
@@ -148,22 +146,7 @@ class CleanSeattleData:
             self.raw_data['_100_block_address'].str.contains(ave_re, na=False, regex=True), ['_100_block_address']
                          ] = self.raw_data['_100_block_address'].str.replace(r'AV', 'AVE', regex=True)
 
-        # Separate street information from the address value in its own column. Some
-        # "_100_block_address" values contain cross streets (FREMONT AVE N/N 76TH ST).
-        # In these cases we split these into separate columns
-        self.raw_data['street_1'] = self.raw_data['_100_block_address'].apply(
-                                                                        lambda x: np.nan if pd.isna(x) else
-                                                                                  x.split('/')[0] if ('/' in x) else
-                                                                                  ' '.join(x.split()[3:])
-                                                                             )
-
-        self.raw_data['street_2'] = self.raw_data['_100_block_address'].apply(
-                                                                        lambda x: np.nan if (pd.isna(x)) or
-                                                                                            ('/' not in x)
-                                                                                  else x.split('/')[1]
-                                                                             )
-
-    def fix_dtypes(self):
+    def cleanup_dtypes(self):
         """
         Summary: Convert datetime and numeric columns into their respective data types,
                 meanwhile tracking and nullifying values that do not conform to the data type
@@ -197,7 +180,7 @@ class CleanSeattleData:
 
             self.raw_data[column] = pd.to_numeric(self.raw_data[column], errors='coerce')
 
-    def fix_offense_datetime(self):
+    def correct_offense_datetime(self):
         """
         Summary: Audit and nullify offense start/end datetime values where the offense start
                 datetime is greater than, or after, the offense end datetime
@@ -217,7 +200,7 @@ class CleanSeattleData:
                           > self.raw_data['offense_end_datetime'],
                           ['offense_start_datetime', 'offense_end_datetime']] = np.nan
 
-    def fix_report_number(self):
+    def cleanup_report_number(self):
         """
         Summary: Attempt to correct report numbers that do not conform to the valid format: four digits
                 and six digits separated by a dash (1234-567890). This method can fix a variety of report
@@ -326,7 +309,7 @@ class CleanSeattleData:
                     ~self.raw_data['report_number'].str.contains(valid_re, regex=True, na=False), ['report_number']
                                  ] = np.nan
 
-    def fix_misspelled_mcpp(self):
+    def cleanup_misspelled_mcpp(self):
         """
         Summary: Attempts to correct invalid (potentially misspelled) mcpp (micro-community) values with
                 a valid mcpp value using fuzzy string matching and a list of all the valid mcpp's (the mcpp
@@ -408,7 +391,10 @@ class CleanSeattleData:
                         self.audit_table = audit_insert(self.audit_table, audited_values, 6)
                         self.raw_data.loc[self.raw_data['offense_id'] == row['offense_id'], ['mcpp']] = np.nan
 
-    def fix_location_codes(self):
+    #def correct_mismatched_loc_codes(self):
+        #self.raw_data['sector']
+
+    def correct_na_loc_codes(self):
         """
         Summary: Attempts to fill in missing location codes using information from lower-level location
         codes (i.e. beat B1 belongs to sector B which belongs to precinct N) (i.e. mcpp Alki belongs
@@ -479,7 +465,7 @@ class CleanSeattleData:
             self.audit_table = audit_insert(self.audit_table, audited_values, 9)
             self.raw_data.loc[~(self.raw_data[high_loc].isin(CleanSeattleData.loc_codes[high_loc])), [high_loc]] = np.nan
 
-    def fix_deci_degrees(self):
+    def correct_deci_degrees(self):
         """
         Summary: Checks if the longitude and latitude are within Washington State's longitude and
                 latitude; if not, audit and nullify these values.
@@ -509,7 +495,7 @@ class CleanSeattleData:
                 ~(self.raw_data['latitude'].between(45.5, 49.0)), ['latitude']
                              ] = np.nan
 
-    def fix_column_order(self):
+    def cleanup_column_order(self):
         """
         Summary: Orders the columns in a consistent manner.
         """
@@ -517,9 +503,39 @@ class CleanSeattleData:
         self.raw_data = self.raw_data[['report_number', 'offense_id', 'offense_start_datetime', 'offense_end_datetime',
                                        'report_datetime', 'group_a_b', 'crime_against_category', 'offense_parent_group',
                                        'offense', 'offense_code', 'precinct', 'sector', 'beat', 'mcpp',
-                                       '_100_block_address', 'longitude', 'latitude', 'street_1', 'street_2']]
+                                       '_100_block_address', 'longitude', 'latitude']]
 
-    def fix_na_values(self):
+    def config_addresses(self):
+        """
+        Summary: Breaks apart/separates multivalued address values into two, separate rows:
+                    ... 26TH AVE NE / NE BLAKELEY ST -> ... 26TH AVE NE
+                                                        ... NE BLAKELEY ST
+        """
+
+        def split_address(address_col: pd.Series):
+            return address_col.str.split('/', expand=True)
+
+        columns = [col for col in list(self.raw_data) if col != '_100_block_address']
+
+        # Create a df with the address data split into two columns
+        split_address_df = split_address(self.raw_data['_100_block_address'])
+
+        # Assign the split address df a multi-index consisting of every column except the '_100_block_address' column
+        split_address_df.index = self.raw_data.set_index(columns).index
+
+        # Replace null values (np.nan) with a non-null value ('na') so the row is not lost
+        # in the following command
+        split_address_df[0].fillna('na', inplace=True)
+
+        self.raw_data = split_address_df.stack().reset_index(columns)
+
+        # Rename the column
+        self.raw_data.rename(columns={0: '_100_block_address'}, inplace=True)
+
+        # Revert the non-null value back to a null value
+        self.raw_data['_100_block_address'].replace('na', np.nan, inplace=True)
+
+    def config_na_values(self):
         """
         Summary: Changes all np.NaN and np.NaT values to None, so when entered
                 into SQL Server database, missing values can be entered as NULL.
@@ -580,19 +596,29 @@ def clean(raw_data):
 
     cleaning_process = CleanSeattleData(raw_data)
 
-    cleaning_process.fix_whitespace()
-    cleaning_process.fix_column_casing()
-    cleaning_process.fix_missing_values()
-    cleaning_process.remove_non_crimes()
-    cleaning_process.fix_address()
-    cleaning_process.fix_dtypes()
-    cleaning_process.fix_offense_datetime()
-    cleaning_process.fix_report_number()
-    cleaning_process.fix_misspelled_mcpp()
-    cleaning_process.fix_location_codes()
-    cleaning_process.fix_deci_degrees()
-    cleaning_process.fix_column_order()
-    cleaning_process.fix_na_values()
+    cleaning_process.cleanup_whitespace()
+    cleaning_process.cleanup_column_casing()
+    cleaning_process.cleanup_na_values()
+
+    cleaning_process.clear_non_crimes()
+
+    cleaning_process.cleanup_addresses()
+    cleaning_process.cleanup_dtypes()
+
+    cleaning_process.correct_offense_datetime()
+
+    cleaning_process.cleanup_report_number()
+
+    cleaning_process.cleanup_misspelled_mcpp()
+
+    # cleaning_process.correct_mismatched_loc_codes
+    cleaning_process.correct_na_loc_codes()
+    cleaning_process.correct_deci_degrees()
+
+    cleaning_process.cleanup_column_order()
+
+    cleaning_process.config_addresses()
+    cleaning_process.config_na_values()
 
     return cleaning_process.raw_data, cleaning_process.audit_table
 

@@ -1,9 +1,11 @@
 import seattle_scraping
 import seattle_cleaning
 import seattle_loading
+from datetime import datetime
+from datetime import timedelta
 
 
-def main():
+def main(date_param=None, how_param='>='):
     """
     Summary: Brings together all components:
                 > Scrapes the data
@@ -14,9 +16,14 @@ def main():
                 > And inserts the data into the database
     """
 
-    # Scrape yesterday's data (or 1 day ago)
+    # If no argument is passed for the 'date' parameter, get the current day's date, subtract
+    # one day, and format it as a yyyy-mm-dd string value
+    if date_param is None:
+        date_param = datetime.strftime(datetime.today().date() - timedelta(days=1), '%Y-%m-%d')
+
+    # By default, scrape yesterday's data (or 1 day ago)
     scraping_process = seattle_scraping.ScrapeSeattleData()
-    scraping_process.scrape(how='>=')
+    scraping_process.scrape(date=date_param, how=how_param)
 
     # Clean the data
     clean_data, audit_data = seattle_cleaning.clean(scraping_process.raw_data)
