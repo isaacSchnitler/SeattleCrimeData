@@ -9,15 +9,31 @@ load_dotenv()
 
 
 class CleanSeattleData:
+    """
+        Summary: A collection of (14) cleaning methods specific to SPD crime data. An instance
+                 of this class represents an instance of the 'cleaning process'. The order 
+                 the methods are defined in is the order intended to be executed in.
 
-    # List of designated, common missing values
+                 To simplify the cleaning process, the clean() function was made, which will 
+                 create an instance of the CleanSeattleData class with the raw crime data and 
+                 execute methods in the correct order, returning the clean data set and the 
+                 audit table with identified invalid values
+
+        Params:
+
+                 raw_data: the raw SPD crime data must be passed as a param 
+    """
+
+    # List of designated, common missing values representations
     missing_values = ['UNKNOWN', '99', 99, 'OOJ', '<NULL>', '<Null>', 'NULL',
                       'null', 'nil', 'empty', '-', 'NA', 'n/a', 'na']
 
-    # Create dataframe containing valid, corresponding precinct/sector/beat location codes
+    # Create dataframe containing valid, corresponding precinct/sector/beat location codes used
+    # to verify raw data against
     loc_codes = pd.read_csv(os.getenv('LOC_CODES'), dtype='O')
 
-    # Create dataframe containing valid, corresponding precinct/mcpp location codes
+    # Create dataframe containing valid, corresponding precinct/mcpp location codes used to verify 
+    # raw data against
     mcpp = pd.read_csv(os.getenv('MCPP'), dtype='O')
 
     def __init__(self, raw_data):
@@ -85,9 +101,8 @@ class CleanSeattleData:
 
     def cleanup_na_values(self):
         """
-        Summary: Replaces any common, designated missing values (specified in the
-                missing_values class attribute) or column specific missing value indicators
-                with a np.nan value.
+        Summary: Replaces any common, designated missing values (given in the missing_values
+                 class attribute) or column specific missing value indicators with a np.nan value
         """
 
         # For each column
@@ -105,7 +120,10 @@ class CleanSeattleData:
 
         # Longitude/latitude use 0's as missing longitude/latitude values
         for column in ['latitude', 'longitude']:
-            self.raw_data.loc[self.raw_data[column].str.contains(r'^0', regex=True), [column]] = np.nan
+            self.raw_data.loc[
+                        self.raw_data[column].str.contains(r'^0', regex=True), 
+                             [column]
+                             ] = np.nan
 
     def clear_non_crimes(self):
         """
@@ -553,7 +571,7 @@ class CleanSeattleData:
 def audit_table():
     """
     Summary: Creates audit table to store information for values that were nullified in
-            the cleaning process.
+             the cleaning process
     """
 
     # Create and return the audit table
@@ -563,11 +581,15 @@ def audit_table():
 
 def audit_insert(source_audit_table, target_audit_table, audited_reason_id):
     """
-    Summary: Takes a source_audit_table argument which is used as the source table in
-            the merging operation. The target_audit_table argument represents a dataframe
-            containing nullified values, and is used as the target table in the merging
-            operation. The audit_reason_id argument represents an ID describes for what
-            reason the value was nullified.
+    Summary: Inserts values considered invalid into an audit table
+
+
+    Params: 
+            source_audit_table: the source table in the merging operation
+            target_audit_table: the dataframe with nullified values, used as the 
+                                target table in the merging operation
+
+            audit_reason_id: the ID describes for what reason the value was nullified
     """
 
     # Take the target_audit_table and re-structure it to match that of the

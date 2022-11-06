@@ -31,16 +31,14 @@ insert_into_tblCrime = '''
         [sector],
         [beat],
         [mcpp],
-        [address],
         [longitude],
         [latitude],
-        [street_1],
-        [street_2]
+        [_100_block_address]
     )
 
     VALUES 
     (
-    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
     )
 '''
 
@@ -64,7 +62,9 @@ insert_into_tblAudit = '''
 def convert_into_record_sets(clean_data, audit_data):
     """
     Summary: Transforms the clean data and audit table dataframes into record sets, the
-            suitable format/structure for the data to be inserted.
+            suitable format/structure for the data to be inserted
+
+    Returns: returns both the clean data and audit data in record set format 
     """
 
     clean_data = clean_data.values.tolist()
@@ -79,7 +79,10 @@ def establish_connection():
     """
     Summary: Attempt to connect to SQL Server database and if successful, return cursor
             object. Otherwise, exit the process.
+
+    Returns: returns cursor object used to connect to database and execute queries
     """
+
     try:
         conn = pyodbc.connect(f'''DSN={database};UID={db_username};PWD={db_password}''')
 

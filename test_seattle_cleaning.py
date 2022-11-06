@@ -36,54 +36,54 @@ class CleaningUnitTesting(unittest.TestCase):
         print(f'\nThe expected output is:')
         print(expected_output)
 
-    def test_fix_whitespace(self):
-        input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/01_fix_whitespace_input.csv', dtype='O'))
-        expected_output = pd.read_csv('unit_testing_files/01_fix_whitespace_output.csv', dtype='O')
+    def test_cleanup_whitespace(self):
+        input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/01_cleanup_whitespace_input.csv', dtype='O'))
+        expected_output = pd.read_csv('unit_testing_files/01_cleanup_whitespace_output.csv', dtype='O')
 
         input_df.cleanup_whitespace()
 
         # self.display(input_df.raw_data, expected_output)
         pdt.assert_frame_equal(input_df.raw_data, expected_output)
 
-    def test_fix_column_casing(self):
-        input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/02_fix_column_casing_input.csv', dtype='O'))
-        expected_output = pd.read_csv('unit_testing_files/02_fix_column_casing_output.csv', dtype='O')
+    def test_cleanup_column_casing(self):
+        input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/02_cleanup_column_casing_input.csv', dtype='O'))
+        expected_output = pd.read_csv('unit_testing_files/02_cleanup_column_casing_output.csv', dtype='O')
 
         input_df.cleanup_column_casing()
 
         # self.display(input_df.raw_data, expected_output)
         pdt.assert_frame_equal(input_df.raw_data, expected_output)
 
-    def test_fix_missing_values(self):
-        input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/03_fix_missing_values_input.csv', dtype='O'))
-        expected_output = pd.read_csv('unit_testing_files/03_fix_missing_values_output.csv', dtype='O')
+    def test_cleanup_na_values(self):
+        input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/03_cleanup_na_values_input.csv', dtype='O'))
+        expected_output = pd.read_csv('unit_testing_files/03_cleanup_na_values_output.csv', dtype='O')
 
         input_df.cleanup_na_values()
 
         # self.display(input_df.raw_data, expected_output)
         pdt.assert_frame_equal(input_df.raw_data, expected_output)
 
-    def test_remove_non_crimes(self):
-        input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/04_remove_non_crimes_input.csv', dtype='O'))
-        expected_output = pd.read_csv('unit_testing_files/04_remove_non_crimes_output.csv', dtype='O')
+    def test_clear_non_crimes(self):
+        input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/04_clear_non_crimes_input.csv', dtype='O'))
+        expected_output = pd.read_csv('unit_testing_files/04_clear_non_crimes_output.csv', dtype='O')
 
         input_df.clear_non_crimes()
 
         # self.display(input_df.raw_data, expected_output)
         pdt.assert_frame_equal(input_df.raw_data, expected_output)
 
-    def test_fix_address(self):
-        input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/05_fix_address_input.csv', dtype='O'))
-        expected_output = pd.read_csv('unit_testing_files/05_fix_address_output.csv', dtype='O')
+    def test_cleanup_addresses(self):
+        input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/05_cleanup_addresses_input.csv', dtype='O'))
+        expected_output = pd.read_csv('unit_testing_files/05_cleanup_addresses_output.csv', dtype='O')
 
         input_df.cleanup_addresses()
 
         # self.display(input_df.raw_data, expected_output)
         pdt.assert_frame_equal(input_df.raw_data, expected_output)
 
-    def test_fix_dtypes(self):
-        input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/06_fix_dtypes_input.csv', dtype='O'))
-        flag_df = pd.read_csv('unit_testing_files/06_fix_dtypes_flag.csv')
+    def test_cleanup_dtypes(self):
+        input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/06_cleanup_dtypes_input.csv', dtype='O'))
+        flag_df = pd.read_csv('unit_testing_files/06_cleanup_dtypes_flag.csv')
 
         input_df.cleanup_dtypes()
         input_gdf = ge.from_pandas(input_df.raw_data)
@@ -96,18 +96,18 @@ class CleaningUnitTesting(unittest.TestCase):
                 print(f'The "{column}" does not maintain the intended "{dtype}" datatype.')
                 pdt.assert_frame_equal(input_df.raw_data, flag_df)
 
-    def test_fix_offense_datetime(self):
-        input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/07_fix_offense_datetime_input.csv', dtype='O'))
-        expected_output = pd.read_csv('unit_testing_files/07_fix_offense_datetime_output.csv', dtype='O')
+    def test_correct_offense_datetime(self):
+        input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/07_correct_offense_datetime_input.csv', dtype='O'))
+        expected_output = pd.read_csv('unit_testing_files/07_correct_offense_datetime_output.csv', dtype='O')
 
         input_df.correct_offense_datetime()
 
         # self.display(input_df.raw_data, expected_output)
         pdt.assert_frame_equal(input_df.raw_data, expected_output)
 
-    def test_fix_report_number(self):
-        input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/08_fix_report_number_input.csv', dtype='O'))
-        expected_output = sc.CleanSeattleData(pd.read_csv('unit_testing_files/08_fix_report_number_output.csv', dtype='O'))
+    def test_cleanup_report_number(self):
+        input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/08_cleanup_report_number_input.csv', dtype='O'))
+        expected_output = sc.CleanSeattleData(pd.read_csv('unit_testing_files/08_cleanup_report_number_output.csv', dtype='O'))
 
         input_df.cleanup_dtypes()
         expected_output.cleanup_dtypes()
@@ -117,31 +117,31 @@ class CleaningUnitTesting(unittest.TestCase):
         # self.display(input_df.raw_data, expected_output.raw_data)
         pdt.assert_frame_equal(input_df.raw_data, expected_output.raw_data)
 
-    def test_fix_misspelled_mcpp(self):
-        input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/09_fix_misspelled_mcpp_input.csv', dtype='O'))
-        expected_output = pd.read_csv('unit_testing_files/09_fix_misspelled_mcpp_output.csv', dtype='O')
+    def test_cleanup_misspelled_mcpp(self):
+        input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/09_cleanup_misspelled_mcpp_input.csv', dtype='O'))
+        expected_output = pd.read_csv('unit_testing_files/09_cleanup_misspelled_mcpp_output.csv', dtype='O')
 
         input_df.cleanup_misspelled_mcpp()
 
         # self.display(input_df.raw_data, expected_output)
         pdt.assert_frame_equal(input_df.raw_data, expected_output)
 
-    def test_fix_location_codes(self):
-        input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/10_fix_location_codes_input.csv', dtype='O'))
-        expected_output = pd.read_csv('unit_testing_files/10_fix_location_codes_output.csv', dtype='O')
+    def test_correct_na_loc_codes(self):
+        input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/10_correct_na_loc_codes_input.csv', dtype='O'))
+        expected_output = pd.read_csv('unit_testing_files/10_correct_na_loc_codes_output.csv', dtype='O')
 
         input_df.correct_na_loc_codes()
 
         # self.display(input_df.raw_data, expected_output)
         pdt.assert_frame_equal(input_df.raw_data, expected_output)
 
-    def test_fix_deci_degrees(self):
+    def test_correct_deci_degrees(self):
         input_df = sc.CleanSeattleData(
-            pd.read_csv('unit_testing_files/11_fix_deci_degrees_input.csv',
+            pd.read_csv('unit_testing_files/11_correct_deci_degrees_input.csv',
                         dtype={'longitude': 'float64', 'latitude': 'float64'})
                               )
 
-        expected_output = pd.read_csv('unit_testing_files/11_fix_deci_degrees_output.csv',
+        expected_output = pd.read_csv('unit_testing_files/11_correct_deci_degrees_output.csv',
                                       dtype={'longitude': 'float64', 'latitude': 'float64'})
 
         input_df.correct_deci_degrees()
@@ -149,9 +149,9 @@ class CleaningUnitTesting(unittest.TestCase):
         # self.display(input_df.raw_data, expected_output)
         pdt.assert_frame_equal(input_df.raw_data, expected_output)
 
-    def test_fix_na_values(self):
-        input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/12_fix_na_values_input.csv', dtype='O'))
-        expected_output = pd.read_csv('unit_testing_files/12_fix_na_values_output.csv', dtype='O')
+    def test_config_na_values(self):
+        input_df = sc.CleanSeattleData(pd.read_csv('unit_testing_files/12_config_na_values_input.csv', dtype='O'))
+        expected_output = pd.read_csv('unit_testing_files/12_config_na_values_output.csv', dtype='O')
 
         input_df.config_na_values()
 

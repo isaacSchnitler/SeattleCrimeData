@@ -26,13 +26,24 @@ class ScrapeSeattleData:
 
     def scrape(self, date=None, how='>='):
         """
-        Summary: Specify a report date and how to collect the data with respect to the
-                 specified date. The 'date' defaults to the day before the current date.
-                 The 'how' defaults to '>=', or said differently, collect data greater than
-                 or equal to the 'date' specified.
+        Summary: Scrapes crime data from SPD website. The 'date' param represents a date from which
+                 to scrape data by and the 'how' param allows you to specify how data should be 
+                 scraped with respect to the date. 
+
+                 For instance, a 'date' param of '2022-06-15' and a 'how' param of '>' translates to:
+                 "scrape all crime data after '2022-06-15'" 
+
+        Params:
+                 date: must be in yyyy-mm-dd format
+                 how: must be one of the following logical operators: >, <, >=, <=, or =
+
+        Returns:
+
+                 Running 'scrape' scrapes the SPD Crime dataset and assigns it to the instance's
+                 'raw_data' attribute in the form of a Pandas dataframe.
         """
 
-        # If no argument is passed for the 'date' parameter, get the current day's date, subtract
+        # If no argument is passed for the 'date' param, get the current day's date, subtract
         # one day, and format it as a yyyy-mm-dd string value
         if date is None:
             date = datetime.strftime(datetime.today().date() - timedelta(days=1), '%Y-%m-%d')
