@@ -1,4 +1,4 @@
-import seattle_cleaning as sc
+import clean_seattle_data as sc
 import unittest
 import pandas as pd
 import pandas.testing as pdt
@@ -6,6 +6,7 @@ import great_expectations as ge
 
 pd.options.display.width = None
 pd.options.display.max_columns = None
+pd.set_option('display.max_rows', None)
 
 
 class CleaningUnitTesting(unittest.TestCase):
