@@ -7,6 +7,7 @@ from pandas import read_csv, to_datetime, to_numeric, DataFrame, notnull, merge
 
 from fuzzywuzzy.process import extractOne
 from dotenv import load_dotenv
+from datetime import datetime
 
 load_dotenv()
 
@@ -42,7 +43,7 @@ class CleanSeattleData:
     def __init__(self, raw_data):
         self.raw_data = raw_data
 
-        self.audit_table = audit_table()
+        self.audit_table = create_audit_table()
 
     def cleanup_whitespace(self):
         """
@@ -606,47 +607,74 @@ class CleanSeattleData:
         self.raw_data.where(notnull(self.raw_data), None, inplace=True)
 
 
-def audit_table():
+def create_audit_table():
     """
     Summary: Creates audit table to store information for values that were nullified in
              the cleaning process
     """
 
     # Create and return the audit table
-    the_audit_table = DataFrame(columns=['audited_col', 'offense_id', 'audited_val', 'audited_reason_id'])
+    the_audit_table = DataFrame(columns=['audited_col', 'offense_id', 'audited_val', 'audited_reason_id', 'batch'])
 
     return the_audit_table.set_index(['audited_col', 'offense_id'])
 
 
-def audit_insert(source_audit_table, target_audit_table, audited_reason_id):
+def audit_insert(audit_table, audited_values, audited_reason_id):
     """
-    Summary: Inserts values considered invalid into an audit table
+    Summary: takes audited_values, which are passed in as shown below, and reshapes it into a format that allows it to be 
+             merged with audit table, inserting the new audited values into the audit table. 
+    
+
+            audited_values                                                        audit_table
+
+    +------------+---------------+                 +-------------+------------+-------------------+-------------+------------+
+    | offense_id |  column_name  |                 | audited_col | offense_id | audited_reason_id | audited_val |    batch   |
+    +------------+---------------+                 +-------------+------------+-------------------+-------------+------------+
+    |     1      |   2023-02-45  |    ------>      | column_name |      1     |         1         |  2023-02-45 | 2023-04-08 |
+    |     2      |   9999-09-13  |                 | column_name |      2     |         1         |  9999-09-13 | 2023-04-08 |
+    |     3      |   2O23-O1-O2  |                 | column_name |      3     |         1         |  2O23-O1-O2 | 2023-04-08 |
+    +------------+---------------+                 +-------------+------------+-------------------+-------------+------------+
+
+
 
 
     Params: 
             source_audit_table: the source table in the merging operation
-            target_audit_table: the dataframe with nullified values, used as the 
+            target_audit_table: the dataframe with nulled values, used as the 
                                 target table in the merging operation
 
-            audit_reason_id: the ID describes for what reason the value was nullified
+            audit_reason_id: the ID describes the reason the value was nullified
     """
 
     # Take the target_audit_table and re-structure it to match that of the
     # source_audit_table (the audit table) so it can be merged
-    target_audit_table.set_index('offense_id', inplace=True)
 
-    target_audit_table = DataFrame(target_audit_table.stack())
+    # Set the offense_id as the index 
+    audited_values.set_index('offense_id', inplace=True)
 
-    target_audit_table = target_audit_table.swaplevel()
+    
+    # .stack() moves column_name to index, forming multi-level index w/offense_id
+    # .stack() converts data to Series object, so call DataFrame() over it 
+    audited_values = DataFrame(audited_values.stack())
 
-    target_audit_table.sort_index(inplace=True)
-    target_audit_table['audited_reason_id'] = audited_reason_id
+    
+    # .swapelevel() switches the multi-level index, column_name is now the outer index, offense_id is inner index
+    audited_values = audited_values.swaplevel()
 
-    target_audit_table.rename(columns={0: 'audited_val'}, inplace=True)
-    target_audit_table.index.names = ['audited_col', 'offense_id']
+    # Sort the index & assign the audit reason id value
+    audited_values.sort_index(inplace=True)
+    audited_values['audited_reason_id'] = audited_reason_id
 
-    # Return the merged tables
-    return source_audit_table.combine_first(target_audit_table)
+    # Rename the new column (created from .stack()) to audited_val
+    audited_values.rename(columns={0: 'audited_val'}, inplace=True)
+
+    # Rename the index 
+    audited_values.index.names = ['audited_col', 'offense_id']
+
+    audited_values['batch'] = datetime.today().strftime('%Y-%m-%d')
+
+    # Merge the tables
+    return audit_table.combine_first(audited_values)
 
 
 def clean(raw_data):
