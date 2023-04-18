@@ -1,2 +1,0 @@
-﻿report_number,offense_id,offense_start_datetime,report_datetime,group_a_b,crime_against_category,offense_parent_group,offense,offense_code,precinct,sector,beat,mcpp,_100_block_address,longitude,latitude,offense_end_datetime,street_1,street_2
-2017-902730,7686423300,2017-03-22T11:00:00.000,2017-03-27T17:28:00.000,A,PROPERTY,LARCENY-THEFT,ALL OTHER LARCENY,23H,N,N,N1,BALLARD NORTH,1200 BLOCK OF NW 95TH ST,-122.3720538,47.69790882,2017-03-22T16:15:00.000,NW 95TH ST,NaN

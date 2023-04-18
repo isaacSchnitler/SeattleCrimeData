@@ -1,3 +1,0 @@
-﻿report_number,offense_id,offense_start_datetime,report_datetime,group_a_b,crime_against_category,offense_parent_group,offense,offense_code,precinct,sector,beat,mcpp,_100_block_address,longitude,latitude,offense_end_datetime
-20 21-699877,21969 700338,2021-03-22T14:15:00.000,2021-03-23T00:11:19.000       ,A,         PROPERTY,LARCENY - THEFT,ALL OTHER LARCENY           ,23 H,         E,        C,       C2,MADISON PARK,NE 60TH ST / STANFORD AVE NE,-122.2771007,47.63802564,2021-03-22T18:45:00.000
-2022-168139,34591535539,2022-07-01T10:27:00.000,2022-07-01T16:27:00.000,A,PROPERTY,BURGLARY/BREAKING&ENTERING ,Burglary/Breaking & Entering,220,W,D,D3,UNKNOWN,          ,0,0,2022-07-01T16:27:02.000
