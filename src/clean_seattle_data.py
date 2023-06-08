@@ -65,8 +65,6 @@ class CleanSeattleData:
                         -i.e. word&word -> word & word
         """
 
-        self.audit_timer.start()
-
 
         # Regex strings used to identify various whitespace issues
         multi_space_re  =   r'\s{2,}'
@@ -162,9 +160,6 @@ class CleanSeattleData:
         Summary: Make text column casing consistent; uppercase any columns containing letters
         """
 
-        self.audit_timer.start()
-
-
         # For columns with letters
         for column in ['group_a_b', 'crime_against_category', 'offense_parent_group', 'offense',
                        'offense_code', 'precinct', 'sector', 'beat', 'mcpp', '_100_block_address']:
@@ -189,8 +184,6 @@ class CleanSeattleData:
         Summary: Replaces any common, designated missing values (given in the missing_values
                  class attribute) or column specific missing value indicators with a np.nan value
         """
-
-        self.audit_timer.start()
 
         # For each column
         for column in list(self.raw_data):
@@ -249,8 +242,6 @@ class CleanSeattleData:
                  only in crimes.
         """
 
-        self.audit_timer.start()
-
         # Drop records with a 'NOT_A_CRIME' value in the crime_against_category column.
         if (self.raw_data['crime_against_category'] == 'NOT_A_CRIME').any():
 
@@ -278,8 +269,6 @@ class CleanSeattleData:
                     > Fixes inconsistent road labels
                         -i.e. AV -> AVE
         """
-
-        self.audit_timer.start()
 
         # Regex strings used below
         x_re    =   r'\d+X+\s'
@@ -339,8 +328,6 @@ class CleanSeattleData:
                  meanwhile tracking and nullifying values that do not conform to the data type
                  through the audit table.
         """
-
-        self.audit_timer.start()
 
         # For each datetime column ...
         for column in ['offense_start_datetime', 'offense_end_datetime', 'report_datetime']:
@@ -424,8 +411,6 @@ class CleanSeattleData:
                 datetime is greater than, or after, the offense end datetime
         """
 
-        self.audit_timer.start()
-
         # Retrieve and store records where the offense start datetime is after
         # the offense end datetime. From these, retrieve the offense_id and values in question
         audited_values = (
@@ -486,8 +471,6 @@ class CleanSeattleData:
                       of the report date (a common pattern within the dataset)
                         -i.e. 12-567890 -> 2022-567890
         """
-
-        self.audit_timer.start()
 
         # Regex strings used below
         valid_re        =   r'^\d{4}-\d{6}$'
@@ -708,8 +691,6 @@ class CleanSeattleData:
                  the match score is < 85%, mcpp values are audited & made null. 
         """
 
-        self.audit_timer.start()
-
         # Checks for records where mcpp is invalid and not null; these record's mcpp value could be misspelled
         if (
             self.raw_data[
@@ -829,8 +810,6 @@ class CleanSeattleData:
                  With that, we can know Beats (low-level) can determine sectors (high-level), sectors (low-level) 
                  can determine precincts (high-level), and mcpps (low-level) can determine precincts (high-level).
         """
-
-        self.audit_timer.start()
 
         loc_code_pairings = [
                             ('sector', 'beat', 'loc_codes'), 
@@ -989,8 +968,6 @@ class CleanSeattleData:
                 latitude; if not, audit and nullify these values.
         """
 
-        self.audit_timer.start()
-
         # Confirm the longitude is at least within Washington's longitude range; otherwise audit and null the value
         if (
             self.raw_data[
@@ -1084,8 +1061,6 @@ class CleanSeattleData:
         Summary: Orders the columns in a consistent manner.
         """
 
-        self.audit_timer.start()
-
         self.raw_data = self.raw_data[
                                         [
                                         'report_number', 'offense_id', 'offense_start_datetime', 'offense_end_datetime',
@@ -1108,8 +1083,6 @@ class CleanSeattleData:
                     ... 26TH AVE NE / NE BLAKELEY ST -> ... 26TH AVE NE
                                                         ... NE BLAKELEY ST
         """
-
-        self.audit_timer.start()
 
         def split_address(address_col: pd.Series):
         
@@ -1182,8 +1155,6 @@ class CleanSeattleData:
         Summary: Changes all np.NaN and np.NaT values to None, so when entered
                 into SQL Server database, missing values can be entered as NULL.
         """
-
-        self.audit_timer.start()
 
         # Convert all columns to Object data type to allow for None
         for col in list(self.raw_data):
