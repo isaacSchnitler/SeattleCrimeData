@@ -45,19 +45,7 @@ for function in data_retrieval_functions:
 
         break
 
+spd_data = csd.CleanSeattleData(raw_data=dataset)
 
-
-
-
-audit_table = src.audit_functions.create_functions_audit()
-cleaning_process = csd.CleanSeattleData(raw_data=dataset)
-
-cleaning = [
-        
-     
-] 
-
-
-for cleaning_method in cleaning:
-
-
+spd_data.cleanup_whitespace()
+spd_data.cleanup_column_casing()

@@ -14,13 +14,8 @@ load_dotenv()
 class CleanSeattleData:
     """
         Summary: A collection of (14) cleaning methods specific to SPD crime data. An instance
-                 of this class represents an instance of the 'cleaning process'. The order 
-                 the methods are defined in is the order intended to be executed in.
-
-                 To simplify the cleaning process, the clean() function was made, which will 
-                 create an instance of the CleanSeattleData class with the raw crime data and 
-                 execute methods in the correct order, returning the clean data set and the 
-                 audit table with identified invalid values
+                 of this class represents an instance of the cleaning process. The order 
+                 the methods are defined is the order intended to be executed in.
 
         Params:
 
@@ -755,8 +750,8 @@ class CleanSeattleData:
                                                         lambda row: extractOne(
                                                                                 query=row['mcpp'],                          # the row's mcpp value
                                                                                 choices=CleanSeattleData.mcpp['mcpp']       # the list of valid mcpp's 
-                                                                                )[1],  
-                                                                                                             # the match
+                                                                                )[1],                                       # the match
+                                                                                                            
                                                                     axis=1  
                                                         ) 
                                                 )  
@@ -911,7 +906,7 @@ class CleanSeattleData:
                                     )                     
                                 ),
 
-                                [high_loc+'_actual']                                        # Actual high-level loc code                                     
+                                [high_loc+'_actual']                                            # Actual high-level loc code                                     
                             ] = (
                                 self.raw_data                                           # Replace actual high-level loc code(^) with the correct high-level loc
                                 [high_loc + '_correct']                                 # code, as determined by the merge w/the dataframe containing valid value's matchings
@@ -1247,11 +1242,6 @@ def clean(raw_data):
     cleaning_process.config_na_values()
 
     return cleaning_process.raw_data, cleaning_process.audit_val_table
-
-
- #if __name__ == '__main__':
-    #clean()
-
 
 
 

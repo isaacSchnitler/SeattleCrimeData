@@ -12,30 +12,39 @@ from great_expectations import from_pandas
 
 class CleaningUnitTesting(unittest.TestCase):
 
-    correct_dtypes = {'report_number':              'object',
-                      'offense_id':                 'object',
-                      'offense_start_datetime':     'datetime64[ns]',
-                      'report_datetime':            'datetime64[ns]',
-                      'group_a_b':                  'object',
-                      'crime_against_category':     'object',
-                      'offense_parent_group':       'object',
-                      'offense':                    'object',
-                      'offense_code':               'object',
-                      'precinct':                   'object',
-                      'sector':                     'object',
-                      'beat':                       'object',
-                      'mcpp':                       'object',
-                      '_100_block_address':         'object',
-                      'longitude':                  'float64',
-                      'latitude':                   'float64',
-                      'offense_end_datetime':       'datetime64[ns]',
-                      'street_1':                   'object',
-                      'street_2':                   'object'}
+    correct_dtypes = {
+                    'report_number':              'object',
+                    'offense_id':                 'object',
+                    'offense_start_datetime':     'datetime64[ns]',
+                    'report_datetime':            'datetime64[ns]',
+                    'group_a_b':                  'object',
+                    'crime_against_category':     'object',
+                    'offense_parent_group':       'object',
+                    'offense':                    'object',
+                    'offense_code':               'object',
+                    'precinct':                   'object',
+                    'sector':                     'object',
+                    'beat':                       'object',
+                    'mcpp':                       'object',
+                    '_100_block_address':         'object',
+                    'longitude':                  'float64',
+                    'latitude':                   'float64',
+                    'offense_end_datetime':       'datetime64[ns]',
+                    'street_1':                   'object',
+                    'street_2':                   'object'
+                    }
 
 
     def export_to_csv(self, input_df, expected_output):
-        input_df.raw_data.to_csv(path_or_buffer='actual_output.csv', index=False)
-        expected_output.raw_data.to_csv(paht_or_buffer='expected_output.csv', index=False)
+        input_df.raw_data.to_csv(
+                                path_or_buffer='actual_output.csv', 
+                                index=False
+                                )
+
+        expected_output.raw_data.to_csv(
+                                        path_or_buffer='expected_output.csv',
+                                        index=False
+                                        )
 
 
     def test_cleanup_whitespace(self):

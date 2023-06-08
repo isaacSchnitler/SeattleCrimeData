@@ -1,6 +1,6 @@
 import seattle_scraping
 import seattle_cleaning
-import seattle_loading
+import src.seattle_loading as seattle_loading
 from datetime import datetime
 from datetime import timedelta
 
