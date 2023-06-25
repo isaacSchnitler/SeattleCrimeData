@@ -6,8 +6,6 @@ from pandas import read_csv, to_datetime, to_numeric, notnull, merge
 from fuzzywuzzy.process import extractOne
 from dotenv import load_dotenv
 
-from audit_functions import create_audit, audit_values_insert, audit_functions_insert, AuditTimer
-
 load_dotenv()
 
 
@@ -727,7 +725,7 @@ def correct_na_loc_codes(seattle_data):
                                 (
                                 ~seattle_data                                             # Check that actual high-level loc value is NOT in valid list
                                 [high_loc + '_actual']
-                                .isin(valid_df)[high_loc]
+                                .isin(valid_df[high_loc])
                                 ) 
                             
                             &                                                             # AND
@@ -973,44 +971,3 @@ def config_na_values(seattle_data):
                                     func_name   =   self.config_na_values.__name__,
                                     runtime     =   self.audit_timer.stop()
                                     )
-
-
-def clean(raw_data):
-    """
-    Summary: Brings together all cleaning activities/methods and performs
-            them in the intended order.
-    """
-
-    cleaning_process = CleanSeattleData(raw_data)
-
-    cleaning_process.cleanup_whitespace()
-    cleaning_process.cleanup_column_casing()
-    cleaning_process.cleanup_na_values()
-
-    cleaning_process.clear_non_crimes()
-
-    cleaning_process.cleanup_addresses()
-    cleaning_process.cleanup_dtypes()
-
-    cleaning_process.correct_offense_datetime()
-
-    cleaning_process.cleanup_report_number()
-
-    cleaning_process.cleanup_misspelled_mcpp()
-
-    # cleaning_process.correct_mismatched_loc_codes
-    cleaning_process.correct_na_loc_codes()
-    cleaning_process.correct_deci_degrees()
-
-    cleaning_process.cleanup_column_order()
-
-    cleaning_process.config_addresses()
-    cleaning_process.config_na_values()
-
-    return cleaning_process.raw_data, cleaning_process.audit_val_table
-
-
-
-
-
-
