@@ -1,10 +1,9 @@
 from sys import path 
-path.insert(1, '/Users/IsaacSchnitler/Desktop/Projects/SeattleCrimeData/src')
+path.insert(1, '/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/src/audit_functions.py')
 
-import clean_seattle_data as sc
 import audit_functions as audit
 import unittest
-import pandas as pd
+from pandas import read_csv
 import pandas.testing as pdt
 import great_expectations as ge
 
@@ -34,26 +33,176 @@ class CleaningUnitTesting(unittest.TestCase):
                       }
     
 
-    def test_audit_val_table(self):
-        expected_output = pd.read_csv('test/seattle_cleaning_testing_files/13_audit_table_output.csv')
-        expected_output.set_index(['audited_col', 'offense_id'], inplace=True)
+    def test_create_audit_val(self):
 
-        input_df = audit.create_audit(audit_type='values')
+        # setup 
+        expected_output = read_csv('/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/audit_functions_testing_files/01_audit_val_table_output.csv')
+        expected_output.set_index(
+                                    keys=['audited_col', 'offense_id'],
+                                    inplace=True
+                                    )
 
-        pdt.assert_frame_equal(input_df, expected_output)
+        # test
+        test_audit_table = audit.create_audit(audit_type='values')
+
+        pdt.assert_frame_equal(test_audit_table, expected_output)
 
 
-    def test_audit_insert(self):
-        expected_output = pd.read_csv('test/seattle_cleaning_testing_files/14_audit_insert_output.csv', dtype='O')
-        expected_output.set_index(['audited_col', 'offense_id'], inplace=True)
+    def test_create_audit_func(self):
+        
+        # setup
+        expected_output = read_csv('/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/audit_functions_testing_files/02_create_audit_func_output.csv')
 
-        target_table = pd.read_csv('test/seattle_cleaning_testing_files/14_audit_insert_input.csv', dtype='O')
+        # test
+        test_audit_table = audit.create_audit(audit_type='functions')
 
-        input_df = audit.create_audit(audit_type='values')
-        input_df = audit.audit_values_insert(input_df, target_table, '3')
+        pdt.assert_frame_equal(test_audit_table, expected_output)
+
+
+    def test_audit_values_insert(self):
+        
+        # setup
+        test_audit_table = audit.create_audit(audit_type='values')
+        
+        expected_output = read_csv(
+                                    '/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/audit_functions_testing_files/03_audit_insert_output.csv'
+                                    , dtype='O'
+                                    )
+        
+        expected_output.set_index(
+                                    keys=['audited_col', 'offense_id'], 
+                                    inplace=True
+                                    )
+        
+        audited_values = read_csv('/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/audit_functions_testing_files/03_audit_values_insert_input.csv', dtype='O')
+
+
+        # test
+        test_audit_table = audit.audit_values_insert(test_audit_table, audited_values, '3')
 
         # self.display(input_df, expected_output)
-        pdt.assert_frame_equal(input_df, expected_output) 
+        pdt.assert_frame_equal(test_audit_table, expected_output) 
+
+
+    def test_audit_functions_insert(self):
+        pass
+
+
+    def test_audit_dtypes(self):
+        pass
+
+
+    def test_audit_offense_datetime(self):
+
+        # setup 
+        test_data = read_csv('/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/seattle_cleaning_testing_files/07_correct_offense_datetime_input.csv', dtype='O')
+        test_audit_table = audit.create_audit(audit_type='values')
+
+        expected_output = read_csv('/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/audit_functions_testing_files/06_audit_offense_datetime_output', dtype='O')
+        expected_output.set_index(
+                                    keys=['audited_col', 'offense_id'],
+                                    inplace=True
+                                    )
+
+        # test
+        test_audit_table = audit.audit_offense_datetime(
+                                                    seattle_data=test_data,
+                                                    audit_table=test_audit_table
+                                                    )
+                                                     
+        
+        #### ERROR #####
+        # pdt.assert_frame_equal throws AssertionError depsite dataframes being identical 
+        pdt.assert_frame_equal(test_audit_table, expected_output) 
+
+
+    def test_audit_report_number(self):
+        
+        # setup 
+        test_data = read_csv('/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/seattle_cleaning_testing_files/08_cleanup_report_number_input.csv', dtype='O')
+        test_audit_table = audit.create_audit(audit_type='values')
+
+        expected_output = read_csv('/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/audit_functions_testing_files/07_audit_report_number_output.csv', dtype='O')
+        expected_output.set_index(
+                                    keys=['audited_col', 'offense_id'],
+                                    inplace=True
+                                    )
+
+        # test
+        test_audit_table = audit.audit_report_number(
+                                                    seattle_data=test_data,
+                                                    audit_table=test_audit_table
+                                                    )
+        
+        #### ERROR #####
+        # pdt.assert_frame_equal throws AssertionError depsite dataframes being identical 
+        pdt.assert_frame_equal(test_audit_table, expected_output)
+
+
+    def test_audit_mispelled_mcpp(self):
+
+        # setup
+        test_data = read_csv('/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/seattle_cleaning_testing_files/09_cleanup_misspelled_mcpp_input.csv' , dtype='O')
+        test_audit_table = audit.create_audit(audit_type='values')
+
+        expected_output = read_csv('/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/audit_functions_testing_files/08_audit_report_number_output.csv', dtype='O')
+        expected_output.set_index(
+                                keys=['audited_col', 'offense_id'],
+                                inplace=True
+                                )
+        
+        # test 
+        test_audit_table = audit.audit_mispelled_mcpp(
+                                            seattle_data=test_data,
+                                            audit_table=test_audit_table
+                                            )
+        
+        #### ERROR #####
+        # pdt.assert_frame_equal throws AssertionError depsite dataframes being identical 
+        pdt.assert_frame_equal(test_audit_table, expected_output)
+
+
+    def test_audit_correct_na_loc_codes(self):
+
+        # setup 
+        test_data = read_csv('/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/seattle_cleaning_testing_files/10_correct_na_loc_codes_input.csv' , dtype='O')
+        test_audit_table = audit.create_audit(audit_type='values')
+        
+        expected_output = read_csv('/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/audit_functions_testing_files/09_audit_correct_na_loc_codes_output.csv', dtype='O')
+        expected_output.set_index(
+                                keys=['audited_col', 'offense_id'],
+                                inplace=True
+                                )
+        
+        # test
+        test_audit_table = audit.audit_correct_na_loc_codes(
+                                                            seattle_data=test_data,
+                                                            audit_table=test_audit_table
+                                                            )
+        
+        pdt.assert_frame_equal(test_audit_table, expected_output)
+
+
+    def test_audit_correct_deci_degrees(self):
+
+        # setup 
+        test_data = read_csv('/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/seattle_cleaning_testing_files/11_correct_deci_degrees_input.csv', dtype='O')
+        test_audit_table = audit.create_audit(audit_type='values')
+
+
+        expected_output = read_csv('/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/audit_functions_testing_files/10_audit_correct_deci_degrees_output.csv', dtype='O')
+        expected_output.set_index(
+                                keys=['audited_col', 'offense_id'],
+                                inplace=True
+                                )
+        
+        # test
+        test_audit_table = audit.audit_correct_deci_degrees(
+                                                            seattle_data=test_data,
+                                                            audit_table=test_audit_table
+                                                            )
+        
+        pdt.assert_frame_equal(test_audit_table, expected_output)
 
 
 if __name__ == '__main__':
