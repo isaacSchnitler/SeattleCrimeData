@@ -56,6 +56,7 @@ def create_audit(audit_type):
                                keys=['audited_col', 'offense_id'],
                                inplace=True
                                )
+        
 
     if audit_type == 'functions':
         # Create and return the audit table
@@ -113,8 +114,19 @@ def audit_values_insert(audit_table, audited_val, audit_reason):
 
     audited_val['batch'] = datetime.today().strftime('%Y-%m-%d')
 
-    
-    return audit_table.combine_first(audited_val) # Merge & return the tables 
+    audit_table = audit_table.combine_first(audited_val) # Merge & return the tables 
+
+    audit_table = audit_table.astype(
+                                        {
+                                            'audited_val': str, 
+                                            'audited_reason_id': str,
+                                            'batch': str
+                                        }
+                                    )
+
+    # audit_table[['audited_val','audited_reason_id','batch']] = audit_table[['audited_val','audited_reason_id','batch']].astype(str)
+
+    return audit_table
 
 
 def audit_functions_insert(audit_table, func_name, runtime):
@@ -132,7 +144,8 @@ def audit_dtypes(seattle_data, audit_table):
         audited_values = (
                         seattle_data
                         [column]
-                        .notnull() & 
+                        .notnull() 
+                        & 
                         to_datetime(
                                 arg=seattle_data[column],
                                 errors='coerce'
@@ -157,12 +170,13 @@ def audit_dtypes(seattle_data, audit_table):
         
 
     # Do the same with the numeric columns as done with the datetime columns
-    for column in ['longitude', 'latitude']:
+    for column in ('latitude', 'longitude'):
 
         audited_values = (
                         seattle_data
                         [column]
-                        .notnull() & 
+                        .notnull() 
+                        & 
                         to_numeric(
                                 arg=seattle_data[column],
                                 errors='coerce'
@@ -182,7 +196,7 @@ def audit_dtypes(seattle_data, audit_table):
                                         audit_reason=2 
                                         )
         
-        return audit_table
+    return audit_table
         
 
 def audit_offense_datetime(seattle_data, audit_table):
@@ -201,7 +215,7 @@ def audit_offense_datetime(seattle_data, audit_table):
     audit_table = audit_values_insert(
                                     audit_table=audit_table,
                                     audited_val=audited_values,
-                                    audit_reason=3
+                                    audit_reason='3'
                                     )
 
     return audit_table   
