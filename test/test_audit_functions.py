@@ -1,5 +1,6 @@
-import unittest
 import pandas.testing as pdt
+from unittest import TestCase, main
+
 from pandas import (
                     read_csv, 
                     to_datetime
@@ -17,7 +18,7 @@ from ..src.audit_functions import (
                                 )
 
 
-class CleaningUnitTesting(unittest.TestCase):
+class CleaningUnitTesting(TestCase):
 
     correct_dtypes = {
                       'report_number':              'object',
@@ -53,7 +54,7 @@ class CleaningUnitTesting(unittest.TestCase):
     def test_create_audit_val(self):
 
         # setup 
-        expected_output = read_csv('/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/audit_functions_testing_files/01_create_audit_val.csv')
+        expected_output = read_csv('SeattleCrimeData/test/audit_functions_testing_files/01_create_audit_val.csv')
         expected_output.set_index(
                                     keys=['audited_col', 'offense_id'],
                                     inplace=True
@@ -69,7 +70,7 @@ class CleaningUnitTesting(unittest.TestCase):
     def test_create_audit_func(self):
         
         # setup
-        expected_output = read_csv('/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/audit_functions_testing_files/02_create_audit_func_output.csv')
+        expected_output = read_csv('SeattleCrimeData/test/audit_functions_testing_files/02_create_audit_func_output.csv')
 
         # test
         test_audit_table = create_audit(audit_type='functions')
@@ -84,8 +85,7 @@ class CleaningUnitTesting(unittest.TestCase):
         test_audit_table = create_audit(audit_type='values')
         
         expected_output = read_csv(
-                                    '/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/audit_functions_testing_files/03_audit_values_insert_output.csv'
-                                    , dtype='O'
+                                    'SeattleCrimeData/test/audit_functions_testing_files/03_audit_values_insert_output.csv', dtype='O'
                                     )
         
         expected_output.set_index(
@@ -95,7 +95,7 @@ class CleaningUnitTesting(unittest.TestCase):
         
         expected_output['batch'] = to_datetime('today').strftime('%Y-%m-%d')
         
-        audited_values = read_csv('/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/audit_functions_testing_files/03_audit_values_insert_input.csv', dtype='O')
+        audited_values = read_csv('SeattleCrimeData/test/audit_functions_testing_files/03_audit_values_insert_input.csv', dtype='O')
 
 
         # test
@@ -113,12 +113,12 @@ class CleaningUnitTesting(unittest.TestCase):
         
         # setup 
 
-        test_data = read_csv('/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/audit_functions_testing_files/05_audit_dtypes_input.csv')
+        test_data = read_csv('SeattleCrimeData/test/audit_functions_testing_files/05_audit_dtypes_input.csv')
 
         test_audit_table = create_audit(audit_type='values')
 
         expected_output = read_csv(
-                                    '/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/audit_functions_testing_files/05_audit_dtypes_output.csv',
+                                    'SeattleCrimeData/test/audit_functions_testing_files/05_audit_dtypes_output.csv',
                                     dtype=CleaningUnitTesting.audit_table_dtypes
                                     )
 
@@ -142,14 +142,14 @@ class CleaningUnitTesting(unittest.TestCase):
 
         # setup 
         test_data = read_csv(
-                            '/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/seattle_cleaning_testing_files/07_correct_offense_datetime_input.csv',
+                            'SeattleCrimeData/test/seattle_cleaning_testing_files/07_correct_offense_datetime_input.csv',
                             dtype=CleaningUnitTesting.audit_table_dtypes
                             )
         
         test_audit_table = create_audit(audit_type='values')
 
         expected_output = read_csv(
-                                    '/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/audit_functions_testing_files/06_audit_offense_datetime_output.csv',
+                                    'SeattleCrimeData/test/audit_functions_testing_files/06_audit_offense_datetime_output.csv',
                                     dtype=CleaningUnitTesting.audit_table_dtypes
                                     )
         
@@ -174,14 +174,14 @@ class CleaningUnitTesting(unittest.TestCase):
         
         # setup 
         test_data = read_csv(
-                            '/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/seattle_cleaning_testing_files/08_cleanup_report_number_input.csv',
+                            'SeattleCrimeData/test/seattle_cleaning_testing_files/08_cleanup_report_number_input.csv',
                             dtype=CleaningUnitTesting.audit_table_dtypes
                             )
         
         test_audit_table = create_audit(audit_type='values')
 
         expected_output = read_csv(
-                                    '/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/audit_functions_testing_files/07_audit_report_number_output.csv',
+                                    'SeattleCrimeData/test/audit_functions_testing_files/07_audit_report_number_output.csv',
                                     dtype=CleaningUnitTesting.audit_table_dtypes
                                     )
         
@@ -206,14 +206,14 @@ class CleaningUnitTesting(unittest.TestCase):
 
         # setup
         test_data = read_csv(
-                            '/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/seattle_cleaning_testing_files/09_cleanup_misspelled_mcpp_input.csv' ,
+                            'SeattleCrimeData/test/seattle_cleaning_testing_files/09_cleanup_misspelled_mcpp_input.csv' ,
                             dtype=CleaningUnitTesting.audit_table_dtypes
                             )
         
         test_audit_table = create_audit(audit_type='values')
 
         expected_output = read_csv(
-                                    '/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/audit_functions_testing_files/08_audit_report_number_output.csv',
+                                    'SeattleCrimeData/test/audit_functions_testing_files/08_audit_report_number_output.csv',
                                     dtype=CleaningUnitTesting.audit_table_dtypes
                                     )
         
@@ -238,14 +238,14 @@ class CleaningUnitTesting(unittest.TestCase):
 
         # setup 
         test_data = read_csv(
-                            '/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/audit_functions_testing_files/09_audit_correct_na_loc_codes_input.csv',
+                            'SeattleCrimeData/test/audit_functions_testing_files/09_audit_correct_na_loc_codes_input.csv',
                             dtype=CleaningUnitTesting.audit_table_dtypes
                             )
         
         test_audit_table = create_audit(audit_type='values')
         
         expected_output = read_csv(
-                                    '/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/audit_functions_testing_files/09_audit_correct_na_loc_codes_output.csv',
+                                    'SeattleCrimeData/test/audit_functions_testing_files/09_audit_correct_na_loc_codes_output.csv',
                                     dtype=CleaningUnitTesting.audit_table_dtypes
                                     )
         
@@ -270,7 +270,7 @@ class CleaningUnitTesting(unittest.TestCase):
 
         # setup 
         test_data = read_csv(
-                            '/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/seattle_cleaning_testing_files/11_correct_deci_degrees_input.csv',
+                            'SeattleCrimeData/test/seattle_cleaning_testing_files/11_correct_deci_degrees_input.csv',
                             dtype=CleaningUnitTesting.audit_table_dtypes
                             )
         
@@ -278,7 +278,7 @@ class CleaningUnitTesting(unittest.TestCase):
 
 
         expected_output = read_csv(
-                                    '/Users/IsaacSchnitler/Desktop/p_projects/SeattleCrimeData/test/audit_functions_testing_files/10_audit_correct_deci_degrees_output.csv',
+                                    'SeattleCrimeData/test/audit_functions_testing_files/10_audit_correct_deci_degrees_output.csv',
                                     dtype=CleaningUnitTesting.audit_table_dtypes
                                     )
         
@@ -299,4 +299,4 @@ class CleaningUnitTesting(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    main()
