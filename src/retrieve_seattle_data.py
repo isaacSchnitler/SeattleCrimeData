@@ -113,25 +113,6 @@ def odata_endpoint(date=None, how='>='):
 
     return dataset
 
-
-def download_csv():
-    """
-        Summary: Retrieves crime data from SPD website via the site's OData endpoint. The 3rd & least preferred method of 
-                 retrieving data from SPD because it does not allow to filter which data to retrieve, resulting in retrieving
-                 the entirety of the data (little over ~1 million records as of when this was written). An example of how the
-                 'date' & 'how' params operate: a 'date' param of'2022-06-15' and a 'how' param of '>' translates to: "scrape
-                  all crime data after 2022-06-15". 
-
-        Returns: Pandas DataFrame
-
-        Params:
-            date    :   represents date from which to scrape data by; must be in yyyy-mm-dd format
-            how     :   allows you to specify how data sould be scraped with respect to date: >, <, >=, <=, or =
-    """
-
-    dataset = read_csv('https://data.seattle.gov/api/views/tazs-3rd5/rows.csv?accessType=DOWNLOAD')
-    
-    return dataset
         
 if __name__ == '__main__':
     dataset = socrata_api()

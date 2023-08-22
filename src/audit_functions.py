@@ -335,15 +335,15 @@ def audit_correct_na_loc_code(seattle_data, audit_table):
 
 def audit_correct_deci_degrees(seattle_data, audit_table):
 
-    seattle_data['longitude'] = to_numeric(seattle_data['longitude'], errors='coerce')
-    seattle_data['latitude'] = to_numeric(seattle_data['latitude'], errors='coerce')
+    seattle_data['longitude_audit'] = to_numeric(seattle_data['longitude'], errors='coerce')
+    seattle_data['latitude_audit'] = to_numeric(seattle_data['latitude'], errors='coerce')
 
     # Audit the longitude if it's not at least within Washington's longitude range
     audited_values = (
                         seattle_data[
                                         ~(
                                             seattle_data
-                                            ['longitude']
+                                            ['longitude_audit']
                                             .between(-125.0, -116.5)
                                             )
                                     ]
@@ -361,13 +361,19 @@ def audit_correct_deci_degrees(seattle_data, audit_table):
                         seattle_data[
                                         ~(
                                             seattle_data
-                                            ['latitude']
+                                            ['latitude_audit']
                                             .between(45.5, 49.0)
                                             )     
                                     ]
                                     
                                     [['offense_id', 'latitude']]
                                     ) 
+    
+    seattle_data.drop(
+                        labels  = ['longitude_audit', 'latitude_audit'],
+                        inplace = True,
+                        axis    = 1
+                    )
     
 
     audit_table = audit_values_insert(

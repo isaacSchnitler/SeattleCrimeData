@@ -10,19 +10,6 @@ load_dotenv()
 
 
 
-
-
-   #def __init__(self, raw_data):
-        #self.raw_data = raw_data
-
-        # Returns 2 empty dataframes, one for storing audited values information, the other for function runtimes
-        #self.audit_val_table = create_audit(audit_type='values')
-
-        #self.audit_func_table = create_audit(audit_type='functions')
-
-        #self.audit_timer = AuditTimer()
-
-
 def cleanup_whitespace(seattle_data):
     """
     Summary: Corrects various whitespace issues, such as:
@@ -46,7 +33,7 @@ def cleanup_whitespace(seattle_data):
     amp_re          =   r'(\w)\s*&\s*(\w)'
 
 
-    # Strip the values for each column of any leading/ending whitespaces
+    # Strip the values for each column (other than longitude/latitude columns) of any leading/ending whitespaces
     for column in list(seattle_data):
 
         # Replace empty string columns w/nan
@@ -305,12 +292,6 @@ def cleanup_dtypes(seattle_data):
 
 
     return seattle_data
-    
-    self.audit_func_table = audit_functions_insert(
-                                    audit_table =   self.audit_func_table,
-                                    func_name   =   self.cleanup_dtypes.__name__,
-                                    runtime     =   self.audit_timer.stop()
-                                    )
 
 
 def correct_offense_datetime(seattle_data):
@@ -330,12 +311,6 @@ def correct_offense_datetime(seattle_data):
     
 
     return seattle_data
-    
-    self.audit_func_table = audit_functions_insert(
-                                    audit_table =   self.audit_func_table,
-                                    func_name   =   self.correct_offense_datetime.__name__,
-                                    runtime     =   self.audit_timer.stop()
-                                    )
 
 
 def cleanup_report_number(seattle_data):
@@ -547,12 +522,6 @@ def cleanup_report_number(seattle_data):
                                 ] = nan
             
     return seattle_data
-    
-    self.audit_func_table = audit_functions_insert(
-                                    audit_table =   self.audit_func_table,
-                                    func_name   =   self.cleanup_report_number.__name__,
-                                    runtime     =   self.audit_timer.stop()
-                                    )
 
 
 def cleanup_misspelled_mcpp(seattle_data):
@@ -648,12 +617,7 @@ def cleanup_misspelled_mcpp(seattle_data):
                             )
 
     return seattle_data
-    
-    self.audit_func_table = audit_functions_insert(
-                                    audit_table =   self.audit_func_table,
-                                    func_name   =   self.cleanup_misspelled_mcpp.__name__,
-                                    runtime     =   self.audit_timer.stop()
-                                    )
+
 
 #def correct_mismatched_loc_codes(self):
     #self.raw_data['sector']
@@ -772,12 +736,6 @@ def correct_na_loc_codes(seattle_data):
 
 
     return seattle_data
-    
-    self.audit_func_table = audit_functions_insert(
-                                    audit_table =   self.audit_func_table,
-                                    func_name   =   self.correct_na_loc_codes.__name__,
-                                    runtime     =   self.audit_timer.stop()
-                                    )
 
 
 def correct_deci_degrees(seattle_data):
@@ -834,12 +792,6 @@ def correct_deci_degrees(seattle_data):
             
 
     return seattle_data
-    
-    self.audit_func_table = audit_functions_insert(
-                                    audit_table =   self.audit_func_table,
-                                    func_name   =   self.correct_deci_degrees.__name__,
-                                    runtime     =   self.audit_timer.stop()
-                                    )
 
 
 def cleanup_column_order(seattle_data):
@@ -858,12 +810,7 @@ def cleanup_column_order(seattle_data):
 
 
     return seattle_data
-    
-    self.audit_func_table = audit_functions_insert(
-                                    audit_table =   self.audit_func_table,
-                                    func_name   =   self.cleanup_column_order.__name__,
-                                    runtime     =   self.audit_timer.stop()
-                                    )
+
 
 def config_addresses(seattle_data):
     """
@@ -933,12 +880,6 @@ def config_addresses(seattle_data):
     
 
     return seattle_data
-    
-    self.audit_func_table = audit_functions_insert(
-                                    audit_table =   self.audit_func_table,
-                                    func_name   =   self.config_addresses.__name__,
-                                    runtime     =   self.audit_timer.stop()
-                                    )
 
 
 def config_na_values(seattle_data):
@@ -965,9 +906,3 @@ def config_na_values(seattle_data):
                     )
     
     return seattle_data
-    
-    self.audit_func_table = audit_functions_insert(
-                                    audit_table =   self.audit_func_table,
-                                    func_name   =   self.config_na_values.__name__,
-                                    runtime     =   self.audit_timer.stop()
-                                    )
